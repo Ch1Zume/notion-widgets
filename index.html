@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2027 MICRO Countdown</title>
+  <style>
+    :root {
+      --bg: transparent;
+      --card-bg: #ffffff;
+      --card-border: #e5e7eb;
+      --box-bg: #ffffff;
+      --box-border: #e5e7eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --badge-bg: #e5e7eb;
+      --badge-text: #374151;
+      --blue: #2563eb;
+      --amber: #b45309;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --card-bg: #202020;
+        --card-border: #2f2f2f;
+        --box-bg: #191919;
+        --box-border: #2f2f2f;
+        --text: #f3f4f6;
+        --muted: #9ca3af;
+        --badge-bg: #2f2f2f;
+        --badge-text: #d1d5db;
+        --blue: #60a5fa;
+        --amber: #fbbf24;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+      padding: 2px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    @media (max-width: 560px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .card-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .badge {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      white-space: nowrap;
+    }
+    .units {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      text-align: center;
+    }
+    .unit-box {
+      background: var(--box-bg);
+      border: 1px solid var(--box-border);
+      border-radius: 8px;
+      padding: 10px 4px;
+    }
+    .num {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-variant-numeric: tabular-nums;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+    .num-blue { color: var(--blue); }
+    .num-amber { color: var(--amber); }
+    .label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">2027 MICRO · ABSTRACT DDL</span>
+        <span class="badge">03/31</span>
+      </div>
+      <div class="units">
+        <div class="unit-box"><div id="abs-d" class="num">--</div><div class="label">天</div></div>
+        <div class="unit-box"><div id="abs-h" class="num">--</div><div class="label">时</div></div>
+        <div class="unit-box"><div id="abs-m" class="num">--</div><div class="label">分</div></div>
+        <div class="unit-box"><div id="abs-s" class="num num-blue">--</div><div class="label">秒</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">2027 MICRO · FULL PAPER DDL</span>
+        <span class="badge">04/07</span>
+      </div>
+      <div class="units">
+        <div class="unit-box"><div id="full-d" class="num">--</div><div class="label">天</div></div>
+        <div class="unit-box"><div id="full-h" class="num">--</div><div class="label">时</div></div>
+        <div class="unit-box"><div id="full-m" class="num">--</div><div class="label">分</div></div>
+        <div class="unit-box"><div id="full-s" class="num num-amber">--</div><div class="label">秒</div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const targets = [
+      { prefix: 'abs', ts: new Date('2027-03-31T23:59:59-04:00').getTime() },
+      { prefix: 'full', ts: new Date('2027-04-07T23:59:59-04:00').getTime() }
+    ];
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function tick() {
+      const now = Date.now();
+      for (const { prefix, ts } of targets) {
+        const diff = Math.max(0, ts - now);
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        document.getElementById(prefix + '-d').textContent = d;
+        document.getElementById(prefix + '-h').textContent = pad(h);
+        document.getElementById(prefix + '-m').textContent = pad(m);
+        document.getElementById(prefix + '-s').textContent = pad(s);
+      }
+    }
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
